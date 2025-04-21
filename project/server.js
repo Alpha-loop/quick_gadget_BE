@@ -7,7 +7,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const helmet = require('helmet');
 // const mongoSanitize = require('express-mongo-sanitize');
 const compression = require('compression');
-const xss = require('xss-clean');
+// const xss = require('xss-clean');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -21,7 +21,7 @@ const app = express();
 
 app.use(helmet());
 // app.use(mongoSanitize());
-app.use(xss());
+// app.use(xss());
 // app.use(
 //   rateLimit({
 //     windowMs: 15 * 60 * 1000, // 15 minutes
