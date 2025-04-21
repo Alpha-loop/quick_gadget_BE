@@ -29,11 +29,11 @@ app.use(xss());
 //   })
 // );
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(compression()); // Enable gzip compression
-  app.use(helmet()); // Security headers
-  app.set('trust proxy', 1); // For rate limiter behind proxies
-}
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(compression()); // Enable gzip compression
+//   app.use(helmet()); // Security headers
+//   app.set('trust proxy', 1); // For rate limiter behind proxies
+// }
 
 // Middleware
 app.use(cors());
