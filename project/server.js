@@ -20,7 +20,7 @@ const app = express();
 
 
 app.use(helmet());
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
 app.use(xss());
 // app.use(
 //   rateLimit({
