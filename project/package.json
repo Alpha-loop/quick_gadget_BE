@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "build": "tsc || echo 'TypeScript not configured'",
-    "deploy": "npm run build && docker build -t gadgetswap-api .",
-    "migrate": "node dist/db/migrations.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "vercel-build": "npm install && npm run build" 
   },
   "keywords": [],
   "author": "",
