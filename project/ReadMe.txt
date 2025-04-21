@@ -1,0 +1,1 @@
+MONGO_URI=mongosh "mongodb+srv://cluster0.upiu7nu.mongodb.net/" --apiVersion 1 --username fxalpha36 --password Forex4life
