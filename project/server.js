@@ -5,7 +5,8 @@ const cors = require('cors');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
+// const mongoSanitize = require('express-mongo-sanitize');
+const compression = require('compression');
 const xss = require('xss-clean');
 
 // Import routes
@@ -29,20 +30,63 @@ app.use(xss());
 //   })
 // );
 
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(compression()); // Enable gzip compression
-//   app.use(helmet()); // Security headers
-//   app.set('trust proxy', 1); // For rate limiter behind proxies
-// }
+if (process.env.NODE_ENV === 'production') {
+  app.use(compression()); // Enable gzip compression
+  app.use(helmet({
+    contentSecurityPolicy: false // Disable CSP for API-only backend
+  })); // Security headers
+  app.set('trust proxy', 1); // For rate limiter behind proxies
+}
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Database connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+
+// Custom sanitization middleware to prevent NoSQL injection
+app.use((req, res, next) => {
+  const sanitizeObject = (obj) => {
+    if (!obj || typeof obj !== 'object') return;
+    for (const key in obj) {
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        sanitizeObject(obj[key]);
+      } else if (typeof obj[key] === 'string') {
+        obj[key] = obj[key].replace(/\$/g, '').replace(/\./g, '');
+      }
+    }
+  };
+
+  sanitizeObject(req.query);
+  sanitizeObject(req.body);
+  sanitizeObject(req.params);
+
+  next();
+});
+
+// MongoDB Atlas connection
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  console.error('Error: MONGO_URI is not defined');
+  process.exit(1);
+}
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 30000,
+  connectTimeoutMS: 60000, // Increased for Vercel
+  socketTimeoutMS: 45000,
+})
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
+
+// // Database connection
+// mongoose.connect(process.env.MONGO_URI)
+//   .then(() => console.log('Connected to MongoDB'))
+//   .catch(err => console.error('MongoDB connection error:', err));
 
 // Swagger configuration
 const swaggerOptions = {
