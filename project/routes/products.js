@@ -1,17 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
-
-
-
-router
-  .route('/')
-  /**
- * @swagger
- * tags:
- *   name: Products
- *   description: Product management
- */
+const authController = require('../controllers/authController');
 
 /**
  * @swagger
@@ -19,56 +9,47 @@ router
  *   get:
  *     summary: Get all products
  *     tags: [Products]
- *     parameters:
- *       - in: query
- *         name: category
- *         schema:
- *           type: string
- *           enum: [phone, tablet, laptop, accessory]
- *         description: Filter by category
- *       - in: query
- *         name: condition
- *         schema:
- *           type: string
- *           enum: [new, used, refurbished]
- *         description: Filter by condition
  *     responses:
  *       200:
  *         description: List of products
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Product'
+ *               type: object
+ *               properties:
+ *                 status: { type: string, example: success }
+ *                 results: { type: number }
+ *                 data: { type: object, properties: { products: { type: array, items: { $ref: '#/components/schemas/Product' } } } }
  */
-  .get(productController.getAllProducts);
+router.get('/', productController.getAllProducts);
 
-router
-  .route('/:id')
-  /**
+/**
  * @swagger
- * /api/products/{id}:
- *   get:
- *     summary: Get a single product
+ * /api/products:
+ *   post:
+ *     summary: Create a new product
  *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Product ID
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Product'
  *     responses:
- *       200:
- *         description: Product details
+ *       201:
+ *         description: Product created
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Product'
- *       404:
- *         description: Product not found
+ *               type: object
+ *               properties:
+ *                 status: { type: string, example: success }
+ *                 data: { type: object, properties: { product: { $ref: '#/components/schemas/Product' } } }
+ *       401:
+ *         description: Unauthorized
  */
-  .get(productController.getProduct);
+router.post('/', authController.protect, productController.createProduct);
 
 module.exports = router;

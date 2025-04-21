@@ -1,69 +1,12 @@
 const express = require('express');
-const authController = require('../controllers/authController');
-
 const router = express.Router();
-
-/**
- * @swagger
- * tags:
- *   name: Auth
- *   description: User authentication endpoints
- */
-
-/**
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Register a new user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *               - email
- *               - password
- *             properties:
- *               name:
- *                 type: string
- *                 example: John Doe
- *               email:
- *                 type: string
- *                 format: email
- *                 example: user@example.com
- *               password:
- *                 type: string
- *                 format: password
- *                 minLength: 8
- *                 example: password123
- *               phone:
- *                 type: string
- *                 example: "+1234567890"
- *     responses:
- *       201:
- *         description: User created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                 user:
- *                   type: object
- *       400:
- *         description: Invalid input
- */
-router.post('/register', authController.register);
+const authController = require('../controllers/authController');
 
 /**
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login a user
+ *     summary: Log in a user
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -71,33 +14,82 @@ router.post('/register', authController.register);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - password
+ *             required: [email, password]
  *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 example: user@example.com
- *               password:
- *                 type: string
- *                 format: password
- *                 example: password123
+ *               email: { type: string, example: user@example.com }
+ *               password: { type: string, example: securePassword123 }
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Successful login
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 token:
- *                   type: string
- *                 user:
- *                   type: object
+ *                 status: { type: string, example: success }
+ *                 token: { type: string }
+ *       400:
+ *         description: Missing email or password
  *       401:
- *         description: Invalid credentials
+ *         description: Incorrect email or password
  */
 router.post('/login', authController.login);
+
+/**
+ * @swagger
+ * /api/auth/signup:
+ *   post:
+ *     summary: Sign up a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, email, password, passwordConfirm]
+ *             properties:
+ *               name: { type: string, example: Test User }
+ *               email: { type: string, example: user@example.com }
+ *               password: { type: string, example: securePassword123 }
+ *               passwordConfirm: { type: string, example: securePassword123 }
+ *     responses:
+ *       201:
+ *         description: User created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status: { type: string, example: success }
+ *                 token: { type: string }
+ *                 data: { type: object, properties: { user: { type: object } } }
+ *       400:
+ *         description: Invalid input
+ */
+router.post('/signup', authController.signup);
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get authenticated user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status: { type: string, example: success }
+ *                 data: { type: object, properties: { user: { type: object } } }
+ *       401:
+ *         description: Unauthorized
+ */
+router.get('/me', authController.protect, authController.getMe);
 
 module.exports = router;

@@ -1,25 +1,13 @@
 const express = require('express');
-const router = express.Router(); // Use Express Router instead
+const router = express.Router();
 const orderController = require('../controllers/orderController');
 const authController = require('../controllers/authController');
-
-// Protect all routes
-router.use(authController.protect);
-
-router
-  .route('/')
-  /**
- * @swagger
- * tags:
- *   name: Orders
- *   description: Order management
- */
 
 /**
  * @swagger
  * /api/orders:
  *   get:
- *     summary: Get all orders (protected)
+ *     summary: Get all orders for the authenticated user
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
@@ -29,18 +17,21 @@ router
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Order'
+ *               type: object
+ *               properties:
+ *                 status: { type: string, example: success }
+ *                 results: { type: number }
+ *                 data: { type: object, properties: { orders: { type: array, items: { $ref: '#/components/schemas/Order' } } } }
  *       401:
  *         description: Unauthorized
  */
-  .get(orderController.getAllOrders)
-  /**
+router.get('/', authController.protect, orderController.getAllOrders);
+
+/**
  * @swagger
  * /api/orders:
  *   post:
- *     summary: Create a new order (protected)
+ *     summary: Create a new order
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
@@ -49,34 +40,20 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - productId
- *               - months
- *             properties:
- *               productId:
- *                 type: string
- *                 description: ID of the product being ordered
- *               months:
- *                 type: number
- *                 description: Installment duration in months
+ *             $ref: '#/components/schemas/Order'
  *     responses:
  *       201:
  *         description: Order created
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Order'
- *       400:
- *         description: Invalid input
+ *               type: object
+ *               properties:
+ *                 status: { type: string, example: success }
+ *                 data: { type: object, properties: { order: { $ref: '#/components/schemas/Order' } } }
  *       401:
  *         description: Unauthorized
  */
-  .post(orderController.createOrder);
-
-router
-  .route('/:id')
-  .get(orderController.getOrder)
-  .patch(orderController.updateOrder);
+router.post('/', authController.protect, orderController.createOrder);
 
 module.exports = router;
