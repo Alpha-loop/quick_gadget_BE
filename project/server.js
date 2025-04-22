@@ -2,7 +2,7 @@ const express = require('express');
 const connectDB = require('./db/connect');
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
-const orderRoutes = require('./routes/orders');
+// const orderRoutes = require('./routes/orders');
 // const paymentRoutes = require('./routes/payments');
 const swapRoutes = require('./routes/swaps');
 const inventoryRoutes = require('./routes/inventory');
@@ -17,7 +17,7 @@ connectDB();
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
+// app.use('/api/orders', orderRoutes);
 // app.use('/api/payments', paymentRoutes);
 app.use('/api/swaps', swapRoutes);
 app.use('/api/inventory', inventoryRoutes);
