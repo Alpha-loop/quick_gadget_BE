@@ -1,5 +1,5 @@
 // controllers/inventoryController.js
-const Product = require('../models/productsModel');
+const Product = require('../models/productModel');
 
 const updateStock = async (req, res) => {
   try {
