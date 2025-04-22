@@ -1,3 +1,4 @@
+// models/productModel.js
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
@@ -5,23 +6,34 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide product name'],
   },
-  price: {
-    type: Number,
-    required: [true, 'Please provide product price'],
-    min: [0, 'Price must be positive'],
-  },
-  description: {
+  type: {
     type: String,
+    enum: ['new', 'used'],
+    required: [true, 'Please specify product type (new/used)'],
   },
   category: {
     type: String,
-    required: [true, 'Please provide product category'],
-    enum: ['phone', 'tablet', 'laptop', 'accessory'],
+    enum: ['phone', 'gadget'],
+    required: [true, 'Please specify category (phone/gadget)'],
+  },
+  brand: {
+    type: String,
+    required: [true, 'Please provide brand'],
+  },
+  price: {
+    type: Number,
+    required: [true, 'Please provide price'],
+  },
+  specifications: {
+    type: Object,
+    default: {},
   },
   condition: {
     type: String,
-    enum: ['new', 'used', 'refurbished'],
-    default: 'new',
+  },
+  stock: {
+    type: Number,
+    required: [true, 'Please provide stock quantity'],
   },
   createdAt: {
     type: Date,
@@ -29,6 +41,4 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-const Product = mongoose.model('Product', productSchema);
-
-module.exports = Product;
+module.exports = mongoose.models.Product || mongoose.model('Product', productSchema);
