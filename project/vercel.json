@@ -1,25 +1,20 @@
 {
   "version": 2,
   "functions": {
-    "routes/**/*.js": {
-      "memory": 128,
+    "server.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "api/**/*.js": {
+      "memory": 1024,
       "maxDuration": 10
     }
   },
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server.js"
-    },
-    {
-      "src": "/health",
-      "dest": "/server.js"
-    }
-  ]
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/server.js" }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
