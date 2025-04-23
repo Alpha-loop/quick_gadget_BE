@@ -6,6 +6,7 @@ const orderRoutes = require('./routes/order');
 // const paymentRoutes = require('./routes/payments');
 const swapRoutes = require('./routes/swaps');
 const inventoryRoutes = require('./routes/inventory');
+const merchantRoutes = require('./routes/merchant');
 require('dotenv').config();
 
 const app = express();
@@ -21,6 +22,7 @@ app.use('/api/order', orderRoutes);
 // app.use('/api/payments', paymentRoutes);
 app.use('/api/swaps', swapRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/merchant', merchantRoutes);
 
 // Basic health check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
