@@ -17,7 +17,7 @@ connectDB();
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api/order', orderRoutes);
 // app.use('/api/payments', paymentRoutes);
 app.use('/api/swaps', swapRoutes);
 app.use('/api/inventory', inventoryRoutes);
