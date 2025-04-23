@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const { enabled } = require('../server');
-const { create } = require('./productModel');
 
 const orderSchema = new mongoose.Schema({
   customer: {
@@ -68,9 +66,9 @@ const orderSchema = new mongoose.Schema({
           type: Date,
           default: Date.now,
         },
-      }
+      },
     },
   ],
 });
 
-export const Order = mongoose.models.Order || mongoose.model('Order', orderSchema);
+module.exports = mongoose.models.Order || mongoose.model('Order', orderSchema);
