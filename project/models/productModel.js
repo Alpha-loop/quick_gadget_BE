@@ -4,36 +4,60 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please provide product name'],
+    required: true,
   },
-  type: {
+  description: {
     type: String,
-    enum: ['new', 'used'],
-    required: [true, 'Please specify product type (new/used)'],
+    required: true,
   },
-  category: {
+  model: {
     type: String,
-    enum: ['phone', 'gadget'],
-    required: [true, 'Please specify category (phone/gadget)'],
+    required: true,
   },
   brand: {
     type: String,
     required: [true, 'Please provide brand'],
   },
-  price: {
+  originalPrice: {
     type: Number,
-    required: [true, 'Please provide price'],
+    required: true,
   },
-  specifications: {
-    type: Object,
-    default: {},
+  sellingPrice: {
+    type: Number,
+    default: true,
   },
   condition: {
     type: String,
+    enum: ['new', 'used', 'refurbished'],
+    required: true,
   },
-  stock: {
+  merchant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+  },
+  images: {
+    type: [String],
+    required: true,
+  },
+  specs: {
+    type: Map,
+    of: String,
+    required: true,
+  },
+  quantity: {
     type: Number,
-    required: [true, 'Please provide stock quantity'],
+    required: true,
+    default: 1,
+  },
+  status: {
+    type: String,
+    enum: ['available', 'sold', 'pending'],
+    default: 'available',
   },
   createdAt: {
     type: Date,

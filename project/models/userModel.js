@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  name: {
+  firstName: {
+    type: String,
+    required: [true, 'Please provide your name'],
+  },
+  lastName: {
     type: String,
     required: [true, 'Please provide your name'],
   },
@@ -16,6 +20,20 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please provide a password'],
     minlength: 8,
     select: false,
+  },
+  role:  {
+    type: String,
+    enum: ['customer', 'admin', 'merchant'],
+    default: 'customer',
+  },
+  address: {
+    street: String,
+    city: String,
+    state: String,
+  },
+  verified: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
