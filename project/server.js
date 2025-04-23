@@ -3,7 +3,7 @@ const connectDB = require('./db/connect');
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/order');
-const paymentRoutes = require('./routes/payments');
+// const paymentRoutes = require('./routes/payments');
 const swapRoutes = require('./routes/swaps');
 const inventoryRoutes = require('./routes/inventory');
 require('dotenv').config();
@@ -18,7 +18,7 @@ connectDB();
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/payments', paymentRoutes);
+// app.use('/api/payments', paymentRoutes);
 app.use('/api/swaps', swapRoutes);
 app.use('/api/inventory', inventoryRoutes);
 
